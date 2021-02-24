@@ -34,4 +34,4 @@ while True:
     if cursor.rowcount > 0:
         print("Lämpötila: {}, ilmankosteus: {}, maankosteus1: {}, maankosteus1: null".format(temp, humidity, groundMoist1))
     
-    time.sleep(5)
+    time.sleep(60)
