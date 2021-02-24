@@ -1,4 +1,3 @@
-from Sensors.air import AirSensor
 from configparser import ConfigParser
 import time # This is the time library, we need this so we can use the sleep function
 from Sensors.groundmoisture import GroundMoistureSensor
@@ -7,10 +6,14 @@ import board
 
 import mysql.connector
 
+config = ConfigParser()
+config.read('config.ini')
+dbsettings = config["database"]
+
+dhtDevice = adafruit_dht.DHT22(board.D4)
+
 while True:
-    config = ConfigParser()
-    config.read('config.ini')
-    dbsettings = config["database"]
+
     conn = mysql.connector.connect(
     host=dbsettings["host"],
     user=dbsettings["user"],
@@ -22,7 +25,6 @@ while True:
     groundMoist1 = sensor1.getSensorValue()
 
     try:
-        dhtDevice = adafruit_dht.DHT22(board.D4)
         temp = dhtDevice.temperature
         humidity = dhtDevice.humidity
     except RuntimeError as error:
