@@ -21,13 +21,16 @@ while True:
     sensor1 = GroundMoistureSensor(17)
     groundMoist1 = sensor1.getSensorValue()
 
-    dhtDevice = adafruit_dht.DHT22(board.D4)
-    airSensor = AirSensor()
-    temp = airSensor.getTemperature(dhtDevice)
-    humidity = airSensor.getHumidity(dhtDevice)
+    try:
+        dhtDevice = adafruit_dht.DHT22(board.D4)
+        temp = dhtDevice.temperature
+        humidity = dhtDevice.humidity
+    except RuntimeError as error:
+        print(error.args[0])
 
     cursor.execute("INSERT INTO sensor_log (temp, humidity, moist1, moist2) VALUES ({:.1f},{:.1f},{},{})".format(temp, humidity, groundMoist1, 0))
     conn.commit()
-    print(cursor.rowcount, "record inserted.")
+    if cursor.rowcount > 0:
+        print("Lämpötila: {}, ilmankosteus: {}, maankosteus1: {}, maankosteus1: null".format(temp, humidity, groundMoist1))
     
     time.sleep(5)
